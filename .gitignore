@@ -1,0 +1,16 @@
+.venv/
+.venv_cpu/
+.tmp/
+__pycache__/
+.pytest_cache/
+.huggingface/
+data/cache/
+data/processed/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+*.model
+*.vocab
+*.log
+

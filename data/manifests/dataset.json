@@ -1,0 +1,53 @@
+{
+  "dataset": "cfilt/iitb-english-hindi",
+  "dataset_revision": "321516f50bdcc1214fa75164c545478976ed84bd",
+  "official_split_sizes": {
+    "test": 2507,
+    "train": 1659083,
+    "validation": 520
+  },
+  "python": "3.13.5",
+  "rules": [
+    "Unicode NFC",
+    "strip surrounding whitespace",
+    "remove empty pairs",
+    "one reference per distinct source per split",
+    "remove source overlap",
+    "shuffle official train/test with fixed seed before selection"
+  ],
+  "seed": 42,
+  "sha256": {
+    "test": "fd2788160f06b56282c32fc7df9f4b05163c0cfdf21fdb09a3448ea451b6a485",
+    "train": "e2709328dcdaa9669ed97b6c128004f10d18ab4934ac7629bf9d951abf38036b",
+    "validation": "df78a512fbfe0a90ded377683b788fecce15cfb0478cf0cbfdd66fc7314cf569"
+  },
+  "splits": {
+    "test": {
+      "removed": {
+        "duplicate_pair": 0,
+        "empty": 0,
+        "source_overlap": 0
+      },
+      "scanned": 1000,
+      "selected": 1000
+    },
+    "train": {
+      "removed": {
+        "duplicate_pair": 122,
+        "empty": 45,
+        "source_overlap": 0
+      },
+      "scanned": 10167,
+      "selected": 10000
+    },
+    "validation": {
+      "removed": {
+        "duplicate_pair": 0,
+        "empty": 0,
+        "source_overlap": 0
+      },
+      "scanned": 520,
+      "selected": 520
+    }
+  }
+}

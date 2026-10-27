@@ -1,0 +1,104 @@
+{
+  "test": {
+    "reference": {
+      "mt5": {
+        "examples": 1000,
+        "max": 154,
+        "median": 42,
+        "over_limit": 4,
+        "p95": 93
+      },
+      "scratch": {
+        "examples": 1000,
+        "max": 162,
+        "median": 34,
+        "over_limit": 1,
+        "p95": 75
+      }
+    },
+    "source": {
+      "mt5": {
+        "examples": 1000,
+        "max": 116,
+        "median": 29,
+        "over_limit": 0,
+        "p95": 57
+      },
+      "scratch": {
+        "examples": 1000,
+        "max": 177,
+        "median": 34,
+        "over_limit": 1,
+        "p95": 71
+      }
+    }
+  },
+  "train": {
+    "reference": {
+      "mt5": {
+        "examples": 10000,
+        "max": 426,
+        "median": 21,
+        "over_limit": 184,
+        "p95": 93
+      },
+      "scratch": {
+        "examples": 10000,
+        "max": 376,
+        "median": 16,
+        "over_limit": 65,
+        "p95": 66
+      }
+    },
+    "source": {
+      "mt5": {
+        "examples": 10000,
+        "max": 607,
+        "median": 15,
+        "over_limit": 58,
+        "p95": 60
+      },
+      "scratch": {
+        "examples": 10000,
+        "max": 637,
+        "median": 16,
+        "over_limit": 59,
+        "p95": 62
+      }
+    }
+  },
+  "validation": {
+    "reference": {
+      "mt5": {
+        "examples": 520,
+        "max": 125,
+        "median": 35,
+        "over_limit": 0,
+        "p95": 70
+      },
+      "scratch": {
+        "examples": 520,
+        "max": 112,
+        "median": 27,
+        "over_limit": 0,
+        "p95": 59
+      }
+    },
+    "source": {
+      "mt5": {
+        "examples": 520,
+        "max": 101,
+        "median": 26,
+        "over_limit": 0,
+        "p95": 52
+      },
+      "scratch": {
+        "examples": 520,
+        "max": 117,
+        "median": 29,
+        "over_limit": 0,
+        "p95": 61
+      }
+    }
+  }
+}
