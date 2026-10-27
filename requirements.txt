@@ -2,6 +2,7 @@ accelerate>=1.0,<2
 bitsandbytes>=0.48,<1
 datasets>=3.0,<5
 huggingface_hub>=0.34,<1
+hf_xet>=1.1,<2
 matplotlib>=3.9,<4
 numpy>=2.0,<3
 peft>=0.17,<1

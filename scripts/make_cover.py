@@ -82,9 +82,6 @@ def main():
             hyperlink(right.paragraphs[0], value, value)
         else:
             right.paragraphs[0].add_run(value)
-    document.add_paragraph()
-    note = document.add_paragraph("The repository contains the implementation, experiment settings, saved predictions, evaluation results, and README.")
-    note.paragraph_format.space_before = Pt(6)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     document.save(args.output)
     print(args.output)

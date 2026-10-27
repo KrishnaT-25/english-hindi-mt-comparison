@@ -17,6 +17,7 @@ fonttools==4.68.0
 frozenlist==1.8.0
 fsspec==2026.2.0
 h11==0.16.0
+hf-xet==1.7.0
 httpcore==1.0.9
 httpx==0.28.1
 huggingface_hub==0.36.2
@@ -37,6 +38,7 @@ peft==0.21.2
 pillow==13.0.0
 portalocker==4.4.1
 propcache==0.5.4
+protobuf==6.33.6
 psutil==7.2.2
 pyarrow==24.0.0
 pyparsing==3.3.3
