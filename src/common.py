@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import random
 from pathlib import Path
 
@@ -66,6 +67,11 @@ def sha256(path: Path):
 
 
 def count_parameters(model):
-    return {"total": sum(p.numel() for p in model.parameters()),
+    # bitsandbytes stores two 4-bit weights per byte. The quantization state
+    # retains the original tensor shape, which is the architecture count.
+    def architectural_size(parameter):
+        state = getattr(parameter, "quant_state", None)
+        return math.prod(state.shape) if state is not None else parameter.numel()
+    return {"total": sum(architectural_size(p) for p in model.parameters()),
             "trainable": sum(p.numel() for p in model.parameters() if p.requires_grad)}
 

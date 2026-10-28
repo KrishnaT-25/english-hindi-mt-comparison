@@ -1,0 +1,15 @@
+{
+  "device": "cuda:0",
+  "examples": 1000,
+  "mean_ms": 441.30419659864856,
+  "median_ms": 288.9454999822192,
+  "model": "transformer",
+  "p95_ms": 1223.390200000722,
+  "parameters": {
+    "total": 13525824,
+    "trainable": 13525824
+  },
+  "run_id": "transformer_test_greedy",
+  "timing_policy": "wall clock per sentence including tokenization; warm-up excluded",
+  "training_seconds": 1128.7500832000514
+}

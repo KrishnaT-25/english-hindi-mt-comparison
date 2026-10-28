@@ -1,6 +1,6 @@
 seed: 42
 dataset: cfilt/iitb-english-hindi
-dataset_revision: main
+dataset_revision: 321516f50bdcc1214fa75164c545478976ed84bd
 train_size: 10000
 test_size: 1000
 source_max_tokens: 128

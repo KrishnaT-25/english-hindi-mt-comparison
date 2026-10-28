@@ -1,0 +1,13 @@
+{
+  "BLEU": 0.28584921888647014,
+  "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+  "chrF": 10.23410287003545,
+  "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+  "empty_outputs": 0,
+  "examples": 1000,
+  "mean_inference_ms": 441.30419659864856,
+  "model": "transformer",
+  "non_hindi_outputs": 53,
+  "run_id": "transformer_test_greedy",
+  "truncated_outputs": 130
+}

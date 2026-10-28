@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 1000,
+  "max_new_tokens": 128,
+  "model": "transformer",
+  "parameters": {
+    "total": 13525824,
+    "trainable": 13525824
+  },
+  "revision": "local-best",
+  "sampling": false,
+  "seed": 42,
+  "split": "test",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

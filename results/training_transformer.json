@@ -1,0 +1,75 @@
+{
+  "best_validation_loss": 5.3915345632112945,
+  "config": {
+    "accumulation_steps": 4,
+    "batch_size": 8,
+    "d_model": 256,
+    "decoder_layers": 4,
+    "dropout": 0.1,
+    "encoder_layers": 4,
+    "epochs": 10,
+    "ff_dim": 1024,
+    "lr": 0.0003,
+    "nhead": 4,
+    "patience": 2,
+    "vocab_size": 8000
+  },
+  "device": "cuda",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 6.773441471099853,
+      "validation_loss": 6.356330350729135
+    },
+    {
+      "epoch": 2,
+      "train_loss": 6.1874448062896725,
+      "validation_loss": 6.073858657250038
+    },
+    {
+      "epoch": 3,
+      "train_loss": 5.848946447181702,
+      "validation_loss": 5.860311963008001
+    },
+    {
+      "epoch": 4,
+      "train_loss": 5.59614209060669,
+      "validation_loss": 5.705800005105826
+    },
+    {
+      "epoch": 5,
+      "train_loss": 5.385763540458679,
+      "validation_loss": 5.631665244469276
+    },
+    {
+      "epoch": 6,
+      "train_loss": 5.219652628517151,
+      "validation_loss": 5.5618177120502175
+    },
+    {
+      "epoch": 7,
+      "train_loss": 5.063245935058593,
+      "validation_loss": 5.490269521566538
+    },
+    {
+      "epoch": 8,
+      "train_loss": 4.91143438949585,
+      "validation_loss": 5.452043511317327
+    },
+    {
+      "epoch": 9,
+      "train_loss": 4.767697362709045,
+      "validation_loss": 5.410139956841102
+    },
+    {
+      "epoch": 10,
+      "train_loss": 4.629419324111939,
+      "validation_loss": 5.3915345632112945
+    }
+  ],
+  "parameters": {
+    "total": 13525824,
+    "trainable": 13525824
+  },
+  "seconds": 1128.7500832000514
+}

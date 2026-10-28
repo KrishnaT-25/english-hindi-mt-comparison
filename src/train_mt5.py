@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import time
 
@@ -75,6 +76,9 @@ def main():
                 scaler.update()
                 optimizer.zero_grad(set_to_none=True)
             train_sum += loss.item()
+            if step % 500 == 0:
+                print({"epoch": epoch_number, "step": step,
+                       "steps": len(loaders[0]), "mean_train_loss": train_sum / step}, flush=True)
         model.eval()
         validation_sum = 0.0
         with torch.inference_mode():
@@ -97,6 +101,10 @@ def main():
             "base_model_id": settings["model_id"], "base_revision": revision,
             "device": str(device), "amp_dtype": str(amp_dtype) if use_amp else None,
             "config": settings})
+    del model, base, optimizer, loaders
+    gc.collect()
+    if use_amp:
+        torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":

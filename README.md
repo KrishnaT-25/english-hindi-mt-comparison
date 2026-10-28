@@ -4,7 +4,9 @@ This repository implements a controlled comparison for ICT4403 Assignment 3. It 
 
 ## Dataset and experiment
 
-The data source is the [IIT Bombay English-Hindi Parallel Corpus](https://huggingface.co/datasets/cfilt/iitb-english-hindi). The preparation script resolves and records a specific dataset commit, preserves its official split boundaries, normalizes Unicode to NFC, removes empty and repeated pairs, and prevents source overlap across the selected splits. With seed 42 it targets 10,000 training pairs, all usable official validation pairs, and 1,000 fixed official test pairs. Actual sizes and SHA-256 hashes are written to `data/manifests/dataset.json`.
+The data source is the [IIT Bombay English-Hindi Parallel Corpus](https://huggingface.co/datasets/cfilt/iitb-english-hindi). The preparation script uses a pinned dataset commit, preserves its official split boundaries, normalizes Unicode to NFC, removes empty and repeated pairs, and prevents source overlap across the selected splits. With seed 42, cleaning produced 10,000 training pairs, all 520 official validation pairs, and 1,000 fixed official test pairs. Actual sizes and SHA-256 hashes are written to `data/manifests/dataset.json`.
+
+Dataset attribution: Anoop Kunchukuttan, Pratik Mehta, and Pushpak Bhattacharyya, “The IIT Bombay English-Hindi Parallel Corpus,” LREC 2018. The [dataset repository's license](https://huggingface.co/datasets/cfilt/iitb-english-hindi/blob/main/LICENSE.md) is Creative Commons Attribution-NonCommercial 4.0. This experiment uses a cleaned, fixed subset for a noncommercial academic assignment; published examples retain the source link and attribution.
 
 The scratch model uses a joint 8,000-token SentencePiece tokenizer trained only on the selected training data. mT5, Llama, and Gemma each use their checkpoint tokenizer. Sources and references are kept in UTF-8 JSONL with stable IDs. Checkpoints, downloaded data, and credentials are intentionally excluded from Git.
 
@@ -28,6 +30,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu128
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m src.environment
+.\.venv\Scripts\python.exe -m src.check_access
 .\.venv\Scripts\Activate.ps1
 ```
 
@@ -79,7 +82,9 @@ foreach ($m in 'transformer','mt5','llama','gemma') {
 
 ## Results and interpretation
 
-**Measured results are pending execution.** The following files are the authoritative outputs after a successful run:
+The scratch Transformer test run is complete. Its corpus BLEU is **0.29** and chrF is **10.23** on 1,000 fixed test examples; 130 outputs hit the token limit and 53 lacked Devanagari characters. This is poor translation quality. The mT5, Llama, and Gemma comparisons are still running or pending access, so no overall winner is claimed yet. See [`transformer_review.md`](results/qualitative/transformer_review.md) for observed errors.
+
+The following files are the authoritative outputs after a successful run:
 
 - `results/predictions/*_test_greedy.jsonl`: full raw and scored translations for the identical test IDs.
 - `results/metrics/*_test_greedy.json`: corpus BLEU, chrF, missing-Hindi and truncation counts, and mean inference milliseconds.
