@@ -28,7 +28,7 @@ Use Python 3.13 or a supported Python 3.11/3.12 installation. The commands below
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu128
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.lock
 .\.venv\Scripts\python.exe -m src.environment
 .\.venv\Scripts\python.exe -m src.check_access
 .\.venv\Scripts\Activate.ps1
