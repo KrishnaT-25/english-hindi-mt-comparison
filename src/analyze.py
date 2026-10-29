@@ -83,6 +83,40 @@ def main():
         lines.append("")
     (RESULTS / "qualitative" / "review_examples.md").write_text("\n".join(lines), encoding="utf-8")
 
+    validation = list(read_jsonl(DATA / "validation.jsonl"))[:100]
+    validation_ids = [row["id"] for row in validation]
+    temperature_lines = ["# Sampling temperature examples", "",
+                         "All runs use the same first 100 frozen validation IDs and seed 42. "
+                         "Changed-output counts compare exact scored strings with greedy decoding; "
+                         "they are not quality measures.", ""]
+    for model in MODELS:
+        runs = {}
+        for suffix in ("greedy", "t0.3", "t0.7"):
+            rows = list(read_jsonl(RESULTS / "predictions" /
+                                   f"{model}_validation_{suffix}.jsonl"))
+            runs[suffix] = {row["id"]: row for row in rows}
+            if len(runs[suffix]) != len(rows) or set(runs[suffix]) != set(validation_ids):
+                raise ValueError(f"Temperature ID mismatch: {model} {suffix}")
+        temperature_lines += [f"## {model}", ""]
+        for suffix in ("t0.3", "t0.7"):
+            changed = sum(runs[suffix][id_]["prediction"] !=
+                          runs["greedy"][id_]["prediction"] for id_ in validation_ids)
+            temperature_lines.append(f"- {suffix}: {changed}/100 outputs differ from greedy")
+        temperature_lines.append("")
+        selected = [id_ for id_ in validation_ids if any(
+            runs[suffix][id_]["prediction"] != runs["greedy"][id_]["prediction"]
+            for suffix in ("t0.3", "t0.7"))][:2]
+        for id_ in selected:
+            row = runs["greedy"][id_]
+            temperature_lines += [f"### {id_}", "", f"Source: {row['source']}", "",
+                                  f"Reference: {row['reference']}", ""]
+            for suffix in ("greedy", "t0.3", "t0.7"):
+                prediction = runs[suffix][id_]["prediction"].replace("\n", " ")
+                temperature_lines.append(f"- {suffix}: {prediction}")
+            temperature_lines.append("")
+    (RESULTS / "qualitative" / "temperature_examples.md").write_text(
+        "\n".join(temperature_lines), encoding="utf-8")
+
 
 if __name__ == "__main__":
     main()

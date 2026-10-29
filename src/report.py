@@ -89,7 +89,8 @@ def main():
             f"({temperature_scores[(model, best_decoding)]['chrF']:.2f}; "
             f"change from greedy {delta:+.2f}).")
     lines += ["On this fixed validation subset, " + " ".join(temperature_notes),
-              "These 100-example, one-seed results are exploratory and were not used to select test checkpoints.", "",
+              "These 100-example, one-seed results are exploratory and were not used to select test checkpoints. "
+              "See [temperature output changes and examples](qualitative/temperature_examples.md).", "",
               "## Limitations", "",
               "The systems differ in pretraining, model size, tokenization, precision, and adaptation. The scratch model was trained on a small subset. Decoder-only systems used prompting, so their training time is not applicable.", "",
               "## Error and responsible use review", "",
@@ -124,7 +125,8 @@ def main():
                               "| --- | --- | ---: | ---: |"] + temperature_rows + ["",
                               " ".join(temperature_notes), "",
                               "See the [full measured report](results/REPORT.md), "
-                              "[plots](results/plots/), and [manual error review](results/qualitative/manual_review.md).", "",
+                              "[plots](results/plots/), [temperature examples](results/qualitative/temperature_examples.md), "
+                              "and [manual error review](results/qualitative/manual_review.md).", "",
                               "The mT5 third epoch was interrupted by a CUDA error; the validation-selected "
                               "epoch-2 adapter was used. Its adaptation time is estimated from file timestamps."]
     if args.test_count:
