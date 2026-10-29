@@ -33,6 +33,12 @@ def main():
             prefix = "≈" if bench.get("training_time_method", "").startswith("estimated") else ""
             train = f"{prefix}{bench['training_seconds']:.1f}"
         lines.append(f"| {model} | {score['BLEU']:.2f} | {score['chrF']:.2f} | {bench['mean_ms']:.1f} | {train} | {parameters['total']:,} | {parameters['trainable']:,} |")
+    lines += ["", "## Output diagnostics", "",
+              "| Model | Empty | Truncated at 128 tokens | No Devanagari characters |",
+              "| --- | ---: | ---: | ---: |"]
+    for model in MODELS:
+        score = items[model][0]
+        lines.append(f"| {model} | {score['empty_outputs']} | {score['truncated_outputs']} | {score['non_hindi_outputs']} |")
     lines += ["", f"Highest measured chrF: **{best}**. This is a quality ranking on this test set, not an architecture-only effect.", "",
               "## Temperature study", "",
               "The following 100-example validation runs use one seed. Greedy decoding disables sampling; the other runs use `top_k=0` and `top_p=1`.", "",
