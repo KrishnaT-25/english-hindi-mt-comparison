@@ -51,7 +51,10 @@ def load_system(name, cfg):
                                bnb_4bit_compute_dtype=torch.float16)
     model = AutoModelForCausalLM.from_pretrained(
         model_id, revision=revision, quantization_config=quant, device_map="auto").eval()
-    return model, tokenizer, revision, count_parameters(model)
+    parameters = count_parameters(model)
+    # These are prompt-only baselines: no parameters were adapted in this run.
+    parameters["trainable"] = 0
+    return model, tokenizer, revision, parameters
 
 
 @torch.inference_mode()
