@@ -5,6 +5,14 @@ $pythonExe = Join-Path $projectRoot '.venv\Scripts\python.exe'
 $hfExe = Join-Path $projectRoot '.venv\Scripts\hf.exe'
 $mt5Metric = Join-Path $projectRoot 'results\metrics\mt5_test_greedy.json'
 
+# Prevent idle system sleep while this worker owns the long GPU runs.
+Add-Type -Namespace Win32 -Name PowerRequest -MemberDefinition @'
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+    public static extern uint SetThreadExecutionState(uint flags);
+'@
+[void][Win32.PowerRequest]::SetThreadExecutionState(
+    [uint32]::Parse('80000001', [Globalization.NumberStyles]::HexNumber))
+
 function Invoke-ExperimentCommand([string[]] $arguments) {
     Write-Output "Running: python $($arguments -join ' ')"
     & $pythonExe @arguments
@@ -30,9 +38,11 @@ if (-not ($access.llama.accessible -and $access.gemma.accessible)) {
 }
 
 foreach ($modelName in @('llama', 'gemma')) {
-    Invoke-ExperimentCommand -arguments @('-m', 'src.generate', $modelName, '--limit', '1')
-    Invoke-ExperimentCommand -arguments @('-m', 'src.generate', $modelName)
     $predictionFile = "results/predictions/${modelName}_test_greedy.jsonl"
+    if (-not (Test-Path -LiteralPath $predictionFile)) {
+        Invoke-ExperimentCommand -arguments @('-m', 'src.generate', $modelName, '--limit', '1')
+    }
+    Invoke-ExperimentCommand -arguments @('-m', 'src.generate', $modelName)
     Invoke-ExperimentCommand -arguments @('-m', 'src.evaluate', $predictionFile)
     Invoke-ExperimentCommand -arguments @('-m', 'src.benchmark', $predictionFile)
 }
@@ -50,3 +60,5 @@ foreach ($modelName in @('transformer', 'mt5', 'llama', 'gemma')) {
 Invoke-ExperimentCommand -arguments @('-m', 'src.analyze')
 Invoke-ExperimentCommand -arguments @('-m', 'src.report')
 Write-Output 'All four models and the validation temperature study completed.'
+[void][Win32.PowerRequest]::SetThreadExecutionState(
+    [uint32]::Parse('80000000', [Globalization.NumberStyles]::HexNumber))
