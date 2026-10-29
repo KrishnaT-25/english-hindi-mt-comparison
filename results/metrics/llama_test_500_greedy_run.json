@@ -1,0 +1,22 @@
+{
+  "adaptation": "prompt-only",
+  "batch_size": 1,
+  "device": "cuda:0",
+  "examples": 500,
+  "max_new_tokens": 128,
+  "model": "llama",
+  "parameters": {
+    "total": 1235814400,
+    "trainable": 0
+  },
+  "parent_run_id": "llama_test_greedy",
+  "quantization": "bitsandbytes NF4 4-bit, float16 compute",
+  "revision": "9213176726f574b556790deb65791e0c5aa438b6",
+  "run_id": "llama_test_500_greedy",
+  "sampling": false,
+  "seed": 42,
+  "selection": "first 500 frozen test IDs",
+  "split": "test",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

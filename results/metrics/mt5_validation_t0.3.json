@@ -1,0 +1,13 @@
+{
+  "BLEU": 0.26698477035527274,
+  "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+  "chrF": 8.849048342621659,
+  "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+  "empty_outputs": 0,
+  "examples": 100,
+  "mean_inference_ms": 2083.9786129945423,
+  "model": "mt5",
+  "non_hindi_outputs": 0,
+  "run_id": "mt5_validation_t0.3",
+  "truncated_outputs": 11
+}

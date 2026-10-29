@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 100,
+  "max_new_tokens": 128,
+  "model": "gemma",
+  "parameters": {
+    "total": 999885952,
+    "trainable": 0
+  },
+  "revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+  "sampling": true,
+  "seed": 42,
+  "split": "validation",
+  "temperature": 0.7,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

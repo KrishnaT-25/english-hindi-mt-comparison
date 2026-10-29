@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 500,
+  "mean_ms": 4462.4250599996885,
+  "median_ms": 4457.290249993093,
+  "model": "mt5",
+  "p95_ms": 11992.196500010323,
+  "parameters": {
+    "total": 300520832,
+    "trainable": 344064
+  },
+  "run_id": "mt5_test_500_greedy",
+  "timing_policy": "wall clock per sentence including tokenization; warm-up excluded",
+  "training_seconds": 6829.7,
+  "training_time_method": "estimated elapsed from background log creation to epoch-2 adapter checkpoint timestamp; includes startup and preprocessing"
+}

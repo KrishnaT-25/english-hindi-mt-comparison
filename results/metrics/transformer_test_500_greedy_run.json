@@ -1,0 +1,20 @@
+{
+  "batch_size": 1,
+  "device": "cuda:0",
+  "examples": 500,
+  "max_new_tokens": 128,
+  "model": "transformer",
+  "parameters": {
+    "total": 13525824,
+    "trainable": 13525824
+  },
+  "parent_run_id": "transformer_test_greedy",
+  "revision": "local-best",
+  "run_id": "transformer_test_500_greedy",
+  "sampling": false,
+  "seed": 42,
+  "selection": "first 500 frozen test IDs",
+  "split": "test",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

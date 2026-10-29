@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 100,
+  "max_new_tokens": 128,
+  "model": "llama",
+  "parameters": {
+    "total": 1235814400,
+    "trainable": 0
+  },
+  "revision": "9213176726f574b556790deb65791e0c5aa438b6",
+  "sampling": false,
+  "seed": 42,
+  "split": "validation",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

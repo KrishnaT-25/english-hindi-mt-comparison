@@ -1,0 +1,13 @@
+{
+  "BLEU": 2.691040726373442,
+  "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+  "chrF": 18.63738969601107,
+  "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+  "empty_outputs": 0,
+  "examples": 100,
+  "mean_inference_ms": 2792.1484810014954,
+  "model": "llama",
+  "non_hindi_outputs": 38,
+  "run_id": "llama_validation_greedy",
+  "truncated_outputs": 6
+}

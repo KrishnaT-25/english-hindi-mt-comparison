@@ -84,9 +84,45 @@ foreach ($m in 'transformer','mt5','llama','gemma') {
 ## Results and interpretation
 
 <!-- RESULTS_START -->
-The scratch Transformer test run is complete. Its corpus BLEU is **0.29** and chrF is **10.23** on 1,000 fixed test examples; 130 outputs hit the token limit and 53 lacked Devanagari characters. This is poor translation quality. The mT5, Llama, and Gemma test runs remain pending, so no overall winner is claimed yet. See [`transformer_review.md`](results/qualitative/transformer_review.md) for observed errors.
+All four systems were scored on the same 500 fixed IITB test examples.
 
-The mT5 run completed two epochs and selected the epoch-2 adapter on validation loss (3.6044). A CUDA error interrupted epoch 3 after step 2,000 was logged. The saved adapter is used for test inference. Its recorded adaptation duration is an estimate from background log and checkpoint timestamps, explicitly marked in `results/training_mt5.json`. Model-file access is now confirmed for both gated prompt systems; their test measurements remain pending.
+| Model | BLEU | chrF | Mean ms/sentence | Training seconds | Total parameters | Trainable parameters |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| transformer | 0.36 | 10.56 | 385.7 | 1128.8 | 13,525,824 | 13,525,824 |
+| mt5 | 0.06 | 6.99 | 4462.4 | ≈6829.7 | 300,520,832 | 344,064 |
+| llama | 4.11 | 19.55 | 3011.2 | N/A | 1,235,814,400 | 0 |
+| gemma | 9.83 | 35.59 | 4711.9 | N/A | 999,885,952 | 0 |
+
+Highest measured chrF: **gemma**.
+
+The strongest encoder-decoder system here is transformer (chrF 10.56); the strongest prompt-only decoder system is gemma (chrF 35.59). transformer has the lowest mean batch-1 inference time. Pretraining, size, tokenization, precision, and adaptation also differ, so this is an observed system comparison rather than an architecture-only test.
+
+### Sampling temperature analysis
+
+All three decoding settings were scored on the same 100 validation IDs. This one-seed comparison is exploratory.
+
+| Model | Decoding | BLEU | chrF |
+| --- | --- | ---: | ---: |
+| transformer | Greedy | 0.25 | 9.82 |
+| transformer | Temperature 0.3 | 0.33 | 11.60 |
+| transformer | Temperature 0.7 | 0.23 | 12.06 |
+| mt5 | Greedy | 0.11 | 6.08 |
+| mt5 | Temperature 0.3 | 0.27 | 8.85 |
+| mt5 | Temperature 0.7 | 0.12 | 8.56 |
+| llama | Greedy | 2.69 | 18.64 |
+| llama | Temperature 0.3 | 2.33 | 16.65 |
+| llama | Temperature 0.7 | 3.11 | 16.85 |
+| gemma | Greedy | 7.59 | 34.99 |
+| gemma | Temperature 0.3 | 7.25 | 33.57 |
+| gemma | Temperature 0.7 | 6.95 | 32.74 |
+
+transformer: t0.7 gives the highest validation chrF (12.06; change from greedy +2.24). mt5: t0.3 gives the highest validation chrF (8.85; change from greedy +2.77). llama: greedy gives the highest validation chrF (18.64; change from greedy +0.00). gemma: greedy gives the highest validation chrF (34.99; change from greedy +0.00).
+
+See the [full measured report](results/REPORT.md), [plots](results/plots/), [temperature examples](results/qualitative/temperature_examples.md), and [manual error review](results/qualitative/manual_review.md).
+
+The mT5 third epoch was interrupted by a CUDA error; the validation-selected epoch-2 adapter was used. Its adaptation time is estimated from file timestamps.
+
+The primary comparison uses 500 shared frozen test IDs. The 1,000-example Transformer, mT5, and Llama runs are supplementary.
 <!-- RESULTS_END -->
 
 The following files are the authoritative outputs after a successful run:

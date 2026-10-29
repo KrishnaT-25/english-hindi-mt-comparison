@@ -1,0 +1,13 @@
+{
+  "BLEU": 9.829804934716405,
+  "bleu_signature": "nrefs:1|case:mixed|eff:no|tok:13a|smooth:exp|version:2.6.0",
+  "chrF": 35.59363290153831,
+  "chrf_signature": "nrefs:1|case:mixed|eff:yes|nc:6|nw:0|space:no|version:2.6.0",
+  "empty_outputs": 0,
+  "examples": 500,
+  "mean_inference_ms": 4711.902619199478,
+  "model": "gemma",
+  "non_hindi_outputs": 2,
+  "run_id": "gemma_test_500_greedy",
+  "truncated_outputs": 3
+}

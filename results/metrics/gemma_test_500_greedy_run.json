@@ -1,0 +1,22 @@
+{
+  "adaptation": "prompt-only",
+  "batch_size": 1,
+  "device": "cuda:0",
+  "examples": 500,
+  "max_new_tokens": 128,
+  "model": "gemma",
+  "parameters": {
+    "total": 999885952,
+    "trainable": 0
+  },
+  "parent_run_id": "gemma_test_greedy",
+  "quantization": "bitsandbytes NF4 4-bit, float16 compute",
+  "revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+  "run_id": "gemma_test_500_greedy",
+  "sampling": false,
+  "seed": 42,
+  "selection": "first 500 frozen test IDs",
+  "split": "test",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

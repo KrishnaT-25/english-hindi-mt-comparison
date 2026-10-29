@@ -1,0 +1,20 @@
+{
+  "batch_size": 1,
+  "device": "cuda:0",
+  "examples": 500,
+  "max_new_tokens": 128,
+  "model": "mt5",
+  "parameters": {
+    "total": 300520832,
+    "trainable": 344064
+  },
+  "parent_run_id": "mt5_test_greedy",
+  "revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a",
+  "run_id": "mt5_test_500_greedy",
+  "sampling": false,
+  "seed": 42,
+  "selection": "first 500 frozen test IDs",
+  "split": "test",
+  "temperature": null,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}

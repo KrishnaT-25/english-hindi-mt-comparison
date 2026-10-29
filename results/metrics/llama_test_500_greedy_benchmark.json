@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 500,
+  "mean_ms": 3011.236316600465,
+  "median_ms": 2196.042750030756,
+  "model": "llama",
+  "p95_ms": 6884.109400038142,
+  "parameters": {
+    "total": 1235814400,
+    "trainable": 0
+  },
+  "run_id": "llama_test_500_greedy",
+  "timing_policy": "wall clock per sentence including tokenization; warm-up excluded",
+  "training_seconds": null,
+  "training_time_method": null
+}

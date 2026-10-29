@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 500,
+  "mean_ms": 4711.902619199478,
+  "median_ms": 4251.700499997241,
+  "model": "gemma",
+  "p95_ms": 9464.43019999424,
+  "parameters": {
+    "total": 999885952,
+    "trainable": 0
+  },
+  "run_id": "gemma_test_500_greedy",
+  "timing_policy": "wall clock per sentence including tokenization; warm-up excluded",
+  "training_seconds": null,
+  "training_time_method": null
+}

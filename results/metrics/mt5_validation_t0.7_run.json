@@ -1,0 +1,16 @@
+{
+  "device": "cuda:0",
+  "examples": 100,
+  "max_new_tokens": 128,
+  "model": "mt5",
+  "parameters": {
+    "total": 300520832,
+    "trainable": 344064
+  },
+  "revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a",
+  "sampling": true,
+  "seed": 42,
+  "split": "validation",
+  "temperature": 0.7,
+  "timing": "wall clock per sentence including tokenization; warm-up excluded"
+}
