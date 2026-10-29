@@ -27,7 +27,11 @@ def main():
     for model in MODELS:
         score, bench = items[model]
         parameters = bench["parameters"]
-        train = "N/A" if bench["training_seconds"] is None else f"{bench['training_seconds']:.1f}"
+        if bench["training_seconds"] is None:
+            train = "N/A"
+        else:
+            prefix = "≈" if bench.get("training_time_method", "").startswith("estimated") else ""
+            train = f"{prefix}{bench['training_seconds']:.1f}"
         lines.append(f"| {model} | {score['BLEU']:.2f} | {score['chrF']:.2f} | {bench['mean_ms']:.1f} | {train} | {parameters['total']:,} | {parameters['trainable']:,} |")
     lines += ["", f"Highest measured chrF: **{best}**. This is a quality ranking on this test set, not an architecture-only effect.", "",
               "## Temperature study", "",
@@ -46,6 +50,13 @@ def main():
               "The systems differ in pretraining, model size, tokenization, precision, and adaptation. The scratch model was trained on a small subset. Decoder-only systems used prompting, so their training time is not applicable.", "",
               "## Error and responsible use review", "",
               "Inspect [actual translation examples](qualitative/review_examples.md) for names, amounts, negation, unsupported additions, gender assumptions, cultural meaning, and sensitive wording. Consequential translations require human review. The separate temperature experiment is exploratory.", ""]
+    mt5_training = json.loads((RESULTS / "training_mt5.json").read_text(encoding="utf-8"))
+    if mt5_training.get("interrupted"):
+        limitation = (f"mT5 used its validation-selected epoch-{mt5_training['best_epoch']} adapter. "
+                      "Epoch 3 was interrupted by a CUDA error; its unfinished updates were not scored. "
+                      "The reported adaptation time is an estimate from file timestamps.")
+        index = lines.index("## Error and responsible use review")
+        lines[index:index] = [limitation, ""]
     (RESULTS / "REPORT.md").write_text("\n".join(lines), encoding="utf-8")
     print(RESULTS / "REPORT.md")
 

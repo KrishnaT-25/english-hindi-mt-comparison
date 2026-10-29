@@ -1,0 +1,14 @@
+{
+  "gemma": {
+    "accessible": true,
+    "revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752"
+  },
+  "llama": {
+    "accessible": true,
+    "revision": "9213176726f574b556790deb65791e0c5aa438b6"
+  },
+  "mt5": {
+    "accessible": true,
+    "revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a"
+  }
+}

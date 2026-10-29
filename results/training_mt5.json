@@ -1,0 +1,33 @@
+{
+  "history": [
+    {"epoch": 1, "train_loss": 12.792071524429321, "validation_loss": 4.318768997834279},
+    {"epoch": 2, "train_loss": 6.089595181155205, "validation_loss": 3.604353766257946}
+  ],
+  "seconds": 6829.7,
+  "seconds_kind": "estimated elapsed from background log creation to epoch-2 adapter checkpoint timestamp; includes startup and preprocessing",
+  "best_validation_loss": 3.604353766257946,
+  "best_epoch": 2,
+  "adapter_checkpoint_sha256": "b8c3705ac7c89ae069404356d5ee175dcfcde8fddb91a6de7dd6b9df8d2e7d9e",
+  "interrupted": true,
+  "interruption": {
+    "epoch": 3,
+    "last_logged_step": 2000,
+    "steps_per_epoch": 10000,
+    "error": "torch.AcceleratorError: CUDA error: unknown error during backward pass"
+  },
+  "parameters": {"total": 300520832, "trainable": 344064},
+  "base_model_id": "google/mt5-small",
+  "base_revision": "73fb5dbe4756edadc8fbe8c769b0a109493acf7a",
+  "device": "cuda",
+  "amp_dtype": "torch.bfloat16",
+  "config": {
+    "model_id": "google/mt5-small",
+    "batch_size": 1,
+    "accumulation_steps": 16,
+    "lr": 0.0002,
+    "epochs": 3,
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05
+  }
+}

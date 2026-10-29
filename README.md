@@ -82,7 +82,9 @@ foreach ($m in 'transformer','mt5','llama','gemma') {
 
 ## Results and interpretation
 
-The scratch Transformer test run is complete. Its corpus BLEU is **0.29** and chrF is **10.23** on 1,000 fixed test examples; 130 outputs hit the token limit and 53 lacked Devanagari characters. This is poor translation quality. The mT5, Llama, and Gemma comparisons are still running or pending access, so no overall winner is claimed yet. See [`transformer_review.md`](results/qualitative/transformer_review.md) for observed errors.
+The scratch Transformer test run is complete. Its corpus BLEU is **0.29** and chrF is **10.23** on 1,000 fixed test examples; 130 outputs hit the token limit and 53 lacked Devanagari characters. This is poor translation quality. The mT5, Llama, and Gemma test runs remain pending, so no overall winner is claimed yet. See [`transformer_review.md`](results/qualitative/transformer_review.md) for observed errors.
+
+The mT5 run completed two epochs and selected the epoch-2 adapter on validation loss (3.6044). A CUDA error interrupted epoch 3 after step 2,000 was logged. The saved adapter is used for test inference. Its recorded adaptation duration is an estimate from background log and checkpoint timestamps, explicitly marked in `results/training_mt5.json`. Model-file access is now confirmed for both gated prompt systems; their test measurements remain pending.
 
 The following files are the authoritative outputs after a successful run:
 

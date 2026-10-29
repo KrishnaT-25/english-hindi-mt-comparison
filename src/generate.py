@@ -38,7 +38,10 @@ def load_system(name, cfg):
         tokenizer = AutoTokenizer.from_pretrained(folder, use_fast=False)
         base = AutoModelForSeq2SeqLM.from_pretrained(cfg["mt5"]["model_id"], revision=revision)
         model = PeftModel.from_pretrained(base, folder).to(device).eval()
-        return model, tokenizer, revision, count_parameters(model)
+        parameters = count_parameters(model)
+        # Inference freezes the adapter; report the count used during adaptation.
+        parameters["trainable"] = training["parameters"]["trainable"]
+        return model, tokenizer, revision, parameters
     model_id = cfg[name]["model_id"]
     revision = revisions.get(name, {}).get("revision")
     if device.type != "cuda":

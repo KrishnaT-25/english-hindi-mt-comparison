@@ -27,7 +27,9 @@ def main():
               "parameters": run["parameters"], "device": run["device"],
               "timing_policy": run["timing"]}
     training = RESULTS / f"training_{run['model']}.json"
-    result["training_seconds"] = json.loads(training.read_text(encoding="utf-8"))["seconds"] if training.exists() else None
+    training_data = json.loads(training.read_text(encoding="utf-8")) if training.exists() else None
+    result["training_seconds"] = training_data["seconds"] if training_data else None
+    result["training_time_method"] = training_data.get("seconds_kind", "instrumented wall clock") if training_data else None
     write_json(RESULTS / "metrics" / f"{run_id}_benchmark.json", result)
     print(json.dumps(result, indent=2))
 
