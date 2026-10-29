@@ -82,9 +82,11 @@ foreach ($m in 'transformer','mt5','llama','gemma') {
 
 ## Results and interpretation
 
+<!-- RESULTS_START -->
 The scratch Transformer test run is complete. Its corpus BLEU is **0.29** and chrF is **10.23** on 1,000 fixed test examples; 130 outputs hit the token limit and 53 lacked Devanagari characters. This is poor translation quality. The mT5, Llama, and Gemma test runs remain pending, so no overall winner is claimed yet. See [`transformer_review.md`](results/qualitative/transformer_review.md) for observed errors.
 
 The mT5 run completed two epochs and selected the epoch-2 adapter on validation loss (3.6044). A CUDA error interrupted epoch 3 after step 2,000 was logged. The saved adapter is used for test inference. Its recorded adaptation duration is an estimate from background log and checkpoint timestamps, explicitly marked in `results/training_mt5.json`. Model-file access is now confirmed for both gated prompt systems; their test measurements remain pending.
+<!-- RESULTS_END -->
 
 The following files are the authoritative outputs after a successful run:
 
@@ -94,7 +96,7 @@ The following files are the authoritative outputs after a successful run:
 - `results/training_*.json`: training duration, curves, and checkpoint selection.
 - `results/plots/*.png` and `results/qualitative/review_examples.md`: measured plots and examples for manual review.
 
-The best model must be identified from the completed measurements. Performance differences cannot be attributed to architecture alone because pretraining, parameter counts, tokenization, precision, and adaptation differ. Prompt-only systems have no training time in this experiment. A 10,000-pair scratch run is resource-limited and may translate poorly.
+The best model is identified from the completed measurements. Performance differences cannot be attributed to architecture alone because pretraining, parameter counts, tokenization, precision, and adaptation differ. Prompt-only systems have no training time in this experiment. A 10,000-pair scratch run is resource-limited and may translate poorly.
 
 Manual review should check names, numbers, negation, added details, gender assumptions, cultural expressions, and sensitive content using actual predictions. Translation intended for consequential use needs human review, terminology checks, and evaluation across relevant groups. The temperature comparison is exploratory because it uses one seed and a small validation sample.
 

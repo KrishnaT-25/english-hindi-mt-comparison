@@ -58,6 +58,20 @@ def main():
         index = lines.index("## Error and responsible use review")
         lines[index:index] = [limitation, ""]
     (RESULTS / "REPORT.md").write_text("\n".join(lines), encoding="utf-8")
+    readme_path = ROOT / "README.md"
+    readme = readme_path.read_text(encoding="utf-8")
+    start, end = "<!-- RESULTS_START -->", "<!-- RESULTS_END -->"
+    if readme.count(start) != 1 or readme.count(end) != 1:
+        raise ValueError("README result markers are missing or duplicated")
+    prefix, rest = readme.split(start, 1)
+    _, suffix = rest.split(end, 1)
+    summary = lines[2:10] + ["", f"Highest measured chrF: **{best}**.", "",
+                              "See the [full measured report](results/REPORT.md), "
+                              "[plots](results/plots/), and [actual translations](results/qualitative/review_examples.md).", "",
+                              "The mT5 third epoch was interrupted by a CUDA error; the validation-selected "
+                              "epoch-2 adapter was used. Its adaptation time is estimated from file timestamps."]
+    readme_path.write_text(prefix + start + "\n" + "\n".join(summary) + "\n" + end + suffix,
+                           encoding="utf-8")
     print(RESULTS / "REPORT.md")
 
 
