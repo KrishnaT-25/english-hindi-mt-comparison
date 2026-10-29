@@ -44,8 +44,15 @@ def main():
             plt.close(fig)
     examples = list(read_jsonl(DATA / "test.jsonl"))
     categories = {
+        "names": lambda x: bool(re.search(r"\b[A-Z][a-z]{2,}\b", x[1:])),
         "numbers": lambda x: bool(re.search(r"\d", x)),
         "negation": lambda x: bool(re.search(r"\b(not|never|no|without)\b", x, re.I)),
+        "gendered wording": lambda x: bool(re.search(
+            r"\b(she|he|her|his|woman|women|man|men|wife|husband|girl|boy)\b", x, re.I)),
+        "cultural references": lambda x: bool(re.search(
+            r"\b(temple|mosque|church|festival|prayer|god|goddess|wedding|ritual|tradition)\b", x, re.I)),
+        "sensitive content": lambda x: bool(re.search(
+            r"\b(death|died|killed|murder|prison|sexual|abuse|violence|religion|caste)\b", x, re.I)),
         "long": lambda x: len(x.split()) >= 25,
         "general": lambda x: True,
     }
@@ -59,7 +66,9 @@ def main():
                 if sum(x["category"] == category for x in selected) >= 5:
                     break
     write_json(RESULTS / "qualitative" / "review_examples.json", selected)
-    lines = ["# Translation examples for manual review", ""]
+    lines = ["# Translation examples for manual review", "",
+             "Categories are source-text search cues, not automatic error or bias findings. "
+             "Compare each output with the source and reference before drawing conclusions.", ""]
     for row in selected:
         lines += [f"## {row['category']} {row['id']}", "", f"Source: {row['source']}",
                   "", f"Reference: {row['reference']}", ""]
