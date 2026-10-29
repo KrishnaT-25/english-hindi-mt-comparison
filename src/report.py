@@ -48,18 +48,48 @@ def main():
         score = items[model][0]
         lines.append(f"| {model} | {score['empty_outputs']} | {score['truncated_outputs']} | {score['non_hindi_outputs']} |")
     lines += ["", f"Highest measured chrF: **{best}**. This is a quality ranking on this test set, not an architecture-only effect.", "",
+              "## Model comparison", ""]
+    encoder_best = max(("transformer", "mt5"), key=lambda m: items[m][0]["chrF"])
+    decoder_best = max(("llama", "gemma"), key=lambda m: items[m][0]["chrF"])
+    fastest = min(MODELS, key=lambda m: items[m][1]["mean_ms"])
+    lines += [
+        f"The best encoder-decoder system here is {encoder_best} "
+        f"(chrF {items[encoder_best][0]['chrF']:.2f}); the best prompt-only decoder system "
+        f"is {decoder_best} (chrF {items[decoder_best][0]['chrF']:.2f}). "
+        "This comparison reflects the actual trained checkpoints and prompts, not a controlled "
+        "architecture ablation.", "",
+        f"{fastest} has the lowest mean recorded inference time "
+        f"({items[fastest][1]['mean_ms']:.1f} ms/sentence at batch size 1). "
+        "The table also gives total and adapted parameter counts. The two prompt-only systems "
+        "have no adaptation time; the trained systems used different procedures and data exposure.", "",
               "## Temperature study", "",
               "The following 100-example validation runs use one seed. Greedy decoding disables sampling; the other runs use `top_k=0` and `top_p=1`.", "",
               "| Model | Decoding | BLEU | chrF |",
               "| --- | --- | ---: | ---: |"]
+    temperature_scores = {}
+    temperature_rows = []
     for model in MODELS:
         for label, suffix in (("Greedy", "greedy"), ("Temperature 0.3", "t0.3"),
                               ("Temperature 0.7", "t0.7")):
             path = RESULTS / "metrics" / f"{model}_validation_{suffix}.json"
-            if path.exists():
-                score = json.loads(path.read_text(encoding="utf-8"))
-                lines.append(f"| {model} | {label} | {score['BLEU']:.2f} | {score['chrF']:.2f} |")
-    lines += ["",
+            score = json.loads(path.read_text(encoding="utf-8"))
+            if score["examples"] != 100:
+                raise ValueError(f"Temperature study must use 100 validation IDs: {path}")
+            temperature_scores[(model, suffix)] = score
+            temperature_rows.append(f"| {model} | {label} | {score['BLEU']:.2f} | {score['chrF']:.2f} |")
+    lines += temperature_rows + [""]
+    temperature_notes = []
+    for model in MODELS:
+        best_decoding = max(("greedy", "t0.3", "t0.7"),
+                            key=lambda suffix: temperature_scores[(model, suffix)]["chrF"])
+        delta = (temperature_scores[(model, best_decoding)]["chrF"]
+                 - temperature_scores[(model, "greedy")]["chrF"])
+        temperature_notes.append(
+            f"{model}: {best_decoding} gives the highest validation chrF "
+            f"({temperature_scores[(model, best_decoding)]['chrF']:.2f}; "
+            f"change from greedy {delta:+.2f}).")
+    lines += ["On this fixed validation subset, " + " ".join(temperature_notes),
+              "These 100-example, one-seed results are exploratory and were not used to select test checkpoints.", "",
               "## Limitations", "",
               "The systems differ in pretraining, model size, tokenization, precision, and adaptation. The scratch model was trained on a small subset. Decoder-only systems used prompting, so their training time is not applicable.", "",
               "## Error and responsible use review", "",
@@ -87,8 +117,14 @@ def main():
     prefix, rest = readme.split(start, 1)
     _, suffix = rest.split(end, 1)
     summary = lines[2:10] + ["", f"Highest measured chrF: **{best}**.", "",
+                              "### Sampling temperature analysis", "",
+                              "All three decoding settings were scored on the same 100 validation IDs. "
+                              "This one-seed comparison is exploratory.", "",
+                              "| Model | Decoding | BLEU | chrF |",
+                              "| --- | --- | ---: | ---: |"] + temperature_rows + ["",
+                              " ".join(temperature_notes), "",
                               "See the [full measured report](results/REPORT.md), "
-                              "[plots](results/plots/), and [actual translations](results/qualitative/review_examples.md).", "",
+                              "[plots](results/plots/), and [manual error review](results/qualitative/manual_review.md).", "",
                               "The mT5 third epoch was interrupted by a CUDA error; the validation-selected "
                               "epoch-2 adapter was used. Its adaptation time is estimated from file timestamps."]
     if args.test_count:
