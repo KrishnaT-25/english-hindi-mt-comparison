@@ -63,7 +63,7 @@ def main():
               "## Limitations", "",
               "The systems differ in pretraining, model size, tokenization, precision, and adaptation. The scratch model was trained on a small subset. Decoder-only systems used prompting, so their training time is not applicable.", "",
               "## Error and responsible use review", "",
-              "Inspect [actual translation examples](qualitative/review_examples.md) for names, amounts, negation, unsupported additions, gender assumptions, cultural meaning, and sensitive wording. Consequential translations require human review. The separate temperature experiment is exploratory.", ""]
+              "See the [manual review of observed errors](qualitative/manual_review.md) and [actual translation examples](qualitative/review_examples.md) for names, numbers, negation, unsupported additions, gendered wording, cultural meaning, and sensitive text. Consequential translations require human review. The separate temperature experiment is exploratory.", ""]
     mt5_training = json.loads((RESULTS / "training_mt5.json").read_text(encoding="utf-8"))
     if mt5_training.get("interrupted"):
         limitation = (f"mT5 used its validation-selected epoch-{mt5_training['best_epoch']} adapter. "
