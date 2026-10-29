@@ -89,6 +89,7 @@ def main():
                          "All runs use the same first 100 frozen validation IDs and seed 42. "
                          "Changed-output counts compare exact scored strings with greedy decoding; "
                          "they are not quality measures.", ""]
+    temperature_chrf = {}
     for model in MODELS:
         runs = {}
         for suffix in ("greedy", "t0.3", "t0.7"):
@@ -98,6 +99,9 @@ def main():
             if len(runs[suffix]) != len(rows) or set(runs[suffix]) != set(validation_ids):
                 raise ValueError(f"Temperature ID mismatch: {model} {suffix}")
         temperature_lines += [f"## {model}", ""]
+        temperature_chrf[model] = [json.loads((RESULTS / "metrics" /
+            f"{model}_validation_{suffix}.json").read_text(encoding="utf-8"))["chrF"]
+            for suffix in ("greedy", "t0.3", "t0.7")]
         for suffix in ("t0.3", "t0.7"):
             changed = sum(runs[suffix][id_]["prediction"] !=
                           runs["greedy"][id_]["prediction"] for id_ in validation_ids)
@@ -116,6 +120,16 @@ def main():
             temperature_lines.append("")
     (RESULTS / "qualitative" / "temperature_examples.md").write_text(
         "\n".join(temperature_lines), encoding="utf-8")
+    fig, ax = plt.subplots(figsize=(7, 4))
+    for model in MODELS:
+        ax.plot((0, 1, 2), temperature_chrf[model], marker="o", label=model)
+    ax.set_xticks((0, 1, 2), ("Greedy", "0.3", "0.7"))
+    ax.set(xlabel="Decoding setting", ylabel="Validation chrF",
+           title="Sampling temperature study (100 fixed validation IDs)")
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(plot_dir / "temperature_chrf.png", dpi=180)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
