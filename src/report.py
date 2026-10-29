@@ -118,6 +118,13 @@ def main():
     prefix, rest = readme.split(start, 1)
     _, suffix = rest.split(end, 1)
     summary = lines[2:10] + ["", f"Highest measured chrF: **{best}**.", "",
+                              f"The strongest encoder-decoder system here is {encoder_best} "
+                              f"(chrF {items[encoder_best][0]['chrF']:.2f}); the strongest "
+                              f"prompt-only decoder system is {decoder_best} "
+                              f"(chrF {items[decoder_best][0]['chrF']:.2f}). "
+                              f"{fastest} has the lowest mean batch-1 inference time. "
+                              "Pretraining, size, tokenization, precision, and adaptation also differ, "
+                              "so this is an observed system comparison rather than an architecture-only test.", "",
                               "### Sampling temperature analysis", "",
                               "All three decoding settings were scored on the same 100 validation IDs. "
                               "This one-seed comparison is exploratory.", "",
