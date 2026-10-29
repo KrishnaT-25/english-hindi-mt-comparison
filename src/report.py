@@ -1,6 +1,7 @@
 """Build a factual result summary after every required run completes."""
 from __future__ import annotations
 
+import argparse
 import json
 
 from src.common import RESULTS, ROOT
@@ -10,15 +11,22 @@ MODELS = ["transformer", "mt5", "llama", "gemma"]
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test-count", type=int,
+                        help="Use the shared fixed-prefix test subset instead of the full test run")
+    args = parser.parse_args()
     items = {}
     for model in MODELS:
-        run = f"{model}_test_greedy"
+        run = (f"{model}_test_{args.test_count}_greedy" if args.test_count
+               else f"{model}_test_greedy")
         score = json.loads((RESULTS / "metrics" / f"{run}.json").read_text(encoding="utf-8"))
         bench = json.loads((RESULTS / "metrics" / f"{run}_benchmark.json").read_text(encoding="utf-8"))
         items[model] = (score, bench)
     ids = {items[m][0]["examples"] for m in MODELS}
     if len(ids) != 1:
         raise ValueError("Model evaluation sizes differ")
+    if args.test_count and ids != {args.test_count}:
+        raise ValueError("Reported size differs from the requested test subset")
     best = max(MODELS, key=lambda m: items[m][0]["chrF"])
     lines = ["# English to Hindi Translation Results", "",
              f"All four systems were scored on the same {ids.pop()} fixed IITB test examples.", "",
@@ -63,6 +71,13 @@ def main():
                       "The reported adaptation time is an estimate from file timestamps.")
         index = lines.index("## Error and responsible use review")
         lines[index:index] = [limitation, ""]
+    if args.test_count:
+        index = lines.index("## Error and responsible use review")
+        lines[index:index] = [
+            f"The primary comparison uses the first {args.test_count} IDs of the frozen "
+            "seed-42 test selection. The Transformer, mT5, and Llama also have supplemental "
+            "1,000-example prediction files, but those larger runs are not ranked against "
+            "Gemma's smaller run.", ""]
     (RESULTS / "REPORT.md").write_text("\n".join(lines), encoding="utf-8")
     readme_path = ROOT / "README.md"
     readme = readme_path.read_text(encoding="utf-8")
@@ -76,6 +91,9 @@ def main():
                               "[plots](results/plots/), and [actual translations](results/qualitative/review_examples.md).", "",
                               "The mT5 third epoch was interrupted by a CUDA error; the validation-selected "
                               "epoch-2 adapter was used. Its adaptation time is estimated from file timestamps."]
+    if args.test_count:
+        summary += ["", f"The primary comparison uses {args.test_count} shared frozen test IDs. "
+                    "The 1,000-example Transformer, mT5, and Llama runs are supplementary."]
     readme_path.write_text(prefix + start + "\n" + "\n".join(summary) + "\n" + end + suffix,
                            encoding="utf-8")
     print(RESULTS / "REPORT.md")

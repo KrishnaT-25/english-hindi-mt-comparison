@@ -4,7 +4,7 @@ This repository implements a controlled comparison for ICT4403 Assignment 3. It 
 
 ## Dataset and experiment
 
-The data source is the [IIT Bombay English-Hindi Parallel Corpus](https://huggingface.co/datasets/cfilt/iitb-english-hindi). The preparation script uses a pinned dataset commit, preserves its official split boundaries, normalizes Unicode to NFC, removes empty and repeated pairs, and prevents source overlap across the selected splits. With seed 42, cleaning produced 10,000 training pairs, all 520 official validation pairs, and 1,000 fixed official test pairs. Actual sizes and SHA-256 hashes are written to `data/manifests/dataset.json`.
+The data source is the [IIT Bombay English-Hindi Parallel Corpus](https://huggingface.co/datasets/cfilt/iitb-english-hindi). The preparation script uses a pinned dataset commit, preserves its official split boundaries, normalizes Unicode to NFC, removes empty and repeated pairs, and prevents source overlap across the selected splits. With seed 42, cleaning produced 10,000 training pairs, all 520 official validation pairs, and 1,000 fixed official test pairs. The primary comparison uses the first 500 IDs from that frozen selection, recorded in `data/manifests/test_500_ids.json`. Actual sizes and SHA-256 hashes are written to `data/manifests/dataset.json`.
 
 Dataset attribution: Anoop Kunchukuttan, Pratik Mehta, and Pushpak Bhattacharyya, “The IIT Bombay English-Hindi Parallel Corpus,” LREC 2018. The [dataset repository's license](https://huggingface.co/datasets/cfilt/iitb-english-hindi/blob/main/LICENSE.md) is Creative Commons Attribution-NonCommercial 4.0. This experiment uses a cleaned, fixed subset for a noncommercial academic assignment; published examples retain the source link and attribution.
 
@@ -48,23 +48,24 @@ python -m src.train_transformer --smoke
 python -m src.train_transformer
 python -m src.train_mt5 --smoke
 python -m src.train_mt5
-python -m src.generate transformer
-python -m src.generate mt5
-python -m src.generate llama
-python -m src.generate gemma
+python -m src.generate transformer --limit 500
+python -m src.generate mt5 --limit 500
+python -m src.generate llama --limit 500
+python -m src.generate gemma --limit 500
+python -m src.subset_test --count 500
 ```
 
 The smoke runs must finish before the long runs. Train and generate one model at a time to fit this laptop. Each generator saves its complete predictions and per-sentence wall time, including tokenization, after a warm-up. The main comparison uses greedy decoding with a 128-new-token limit. Read `truncated`, `empty_outputs`, and `non_hindi_outputs` alongside BLEU and chrF.
 
 ```powershell
 foreach ($m in 'transformer','mt5','llama','gemma') {
-  python -m src.evaluate "results/predictions/${m}_test_greedy.jsonl"
+  python -m src.evaluate "results/predictions/${m}_test_500_greedy.jsonl" --subset-size 500
 }
-python -m src.analyze
+python -m src.analyze --test-count 500
 foreach ($m in 'transformer','mt5','llama','gemma') {
-  python -m src.benchmark "results/predictions/${m}_test_greedy.jsonl"
+  python -m src.benchmark "results/predictions/${m}_test_500_greedy.jsonl"
 }
-python -m src.report
+python -m src.report --test-count 500
 ```
 
 For an exploratory temperature study, use the first 100 fixed validation IDs for each model. The sampled runs use seed 42, temperatures 0.3 or 0.7, `top_k=0`, and `top_p=1`. Greedy runs are the deterministic baseline.
@@ -90,8 +91,8 @@ The mT5 run completed two epochs and selected the epoch-2 adapter on validation 
 
 The following files are the authoritative outputs after a successful run:
 
-- `results/predictions/*_test_greedy.jsonl`: full raw and scored translations for the identical test IDs.
-- `results/metrics/*_test_greedy.json`: corpus BLEU, chrF, missing-Hindi and truncation counts, and mean inference milliseconds.
+- `results/predictions/*_test_500_greedy.jsonl`: raw and scored translations for the identical 500 test IDs.
+- `results/metrics/*_test_500_greedy.json`: corpus BLEU, chrF, missing-Hindi and truncation counts, and mean inference milliseconds.
 - `results/metrics/*_run.json`: model revisions, parameters, precision-related configuration, and measurement conditions.
 - `results/training_*.json`: training duration, curves, and checkpoint selection.
 - `results/plots/*.png` and `results/qualitative/review_examples.md`: measured plots and examples for manual review.

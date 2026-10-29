@@ -1,3 +1,4 @@
+param([int]$TestCount = 500)
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $projectRoot
@@ -15,8 +16,8 @@ if (-not (Test-Path -LiteralPath $reportFile)) {
 Start-Sleep -Seconds 60
 
 foreach ($modelName in @('transformer', 'mt5', 'llama', 'gemma')) {
-    $predictionFile = "results/predictions/${modelName}_test_greedy.jsonl"
-    & $pythonExe -m src.evaluate $predictionFile
+    $predictionFile = "results/predictions/${modelName}_test_${TestCount}_greedy.jsonl"
+    & $pythonExe -m src.evaluate $predictionFile --subset-size $TestCount
     if ($LASTEXITCODE -ne 0) { throw "Test score verification failed: $modelName" }
     foreach ($suffix in @('greedy', 't0.3', 't0.7')) {
         $predictionFile = "results/predictions/${modelName}_validation_${suffix}.jsonl"
@@ -24,10 +25,10 @@ foreach ($modelName in @('transformer', 'mt5', 'llama', 'gemma')) {
         if ($LASTEXITCODE -ne 0) { throw "Validation score verification failed: $modelName $suffix" }
     }
 }
-& $pythonExe -m src.report
+& $pythonExe -m src.report --test-count $TestCount
 if ($LASTEXITCODE -ne 0) { throw 'Final report regeneration failed.' }
 
-git add README.md results
+git add README.md results "data/manifests/test_${TestCount}_ids.json"
 if ($LASTEXITCODE -ne 0) { throw 'Could not stage final results.' }
 git diff --cached --quiet
 if ($LASTEXITCODE -ne 0) {

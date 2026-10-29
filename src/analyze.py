@@ -1,6 +1,7 @@
 """Make measured comparison plots and a compact qualitative review sheet."""
 from __future__ import annotations
 
+import argparse
 import json
 import re
 
@@ -13,9 +14,13 @@ MODELS = ["transformer", "mt5", "llama", "gemma"]
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test-count", type=int)
+    args = parser.parse_args()
     metrics, predictions = {}, {}
     for model in MODELS:
-        run = f"{model}_test_greedy"
+        run = (f"{model}_test_{args.test_count}_greedy" if args.test_count
+               else f"{model}_test_greedy")
         metrics[model] = json.loads((RESULTS / "metrics" / f"{run}.json").read_text(encoding="utf-8"))
         predictions[model] = {r["id"]: r for r in read_jsonl(RESULTS / "predictions" / f"{run}.jsonl")}
     plot_dir = RESULTS / "plots"
@@ -43,6 +48,8 @@ def main():
             fig.savefig(plot_dir / f"{model}_loss.png", dpi=180)
             plt.close(fig)
     examples = list(read_jsonl(DATA / "test.jsonl"))
+    if args.test_count:
+        examples = examples[:args.test_count]
     categories = {
         "names": lambda x: bool(re.search(r"\b[A-Z][a-z]{2,}\b", x[1:])),
         "numbers": lambda x: bool(re.search(r"\d", x)),

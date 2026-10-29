@@ -11,6 +11,18 @@ import sacrebleu
 from src.common import DATA, RESULTS, ROOT, read_jsonl, write_json
 
 
+def expected_ids(manifest, split, subset_size, row_count):
+    if split != "test" and subset_size is not None:
+        raise ValueError("--subset-size is only for the test split")
+    if subset_size is not None:
+        if not 1 <= subset_size <= len(manifest["ids"]):
+            raise ValueError("Invalid test subset size")
+        if row_count != subset_size:
+            raise ValueError("Prediction row count differs from the declared test subset size")
+        return manifest["ids"][:subset_size]
+    return manifest["ids"] if split == "test" else manifest["ids"][:row_count]
+
+
 def score(rows, references):
     by_id = {}
     for row in rows:
@@ -44,11 +56,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("predictions", type=Path)
     parser.add_argument("--split", choices=["test", "validation"], default="test")
+    parser.add_argument("--subset-size", type=int,
+                        help="Explicit fixed-prefix test subset size; required for partial test files")
     args = parser.parse_args()
     rows = list(read_jsonl(args.predictions))
     manifest = json.loads((ROOT / "data" / "manifests" / f"{args.split}_ids.json").read_text(encoding="utf-8"))
-    expected_ids = manifest["ids"] if args.split == "test" else manifest["ids"][:len(rows)]
-    if {row["id"] for row in rows} != set(expected_ids):
+    selected_ids = expected_ids(manifest, args.split, args.subset_size, len(rows))
+    if {row["id"] for row in rows} != set(selected_ids):
         raise ValueError("Prediction IDs do not match the frozen split selection")
     for row in rows:
         digest = hashlib.sha256(row["reference"].encode("utf-8")).hexdigest()
@@ -56,7 +70,7 @@ def main():
             raise ValueError(f"Reference hash mismatch: {row['id']}")
     if (DATA / f"{args.split}.jsonl").exists():
         references = list(read_jsonl(DATA / f"{args.split}.jsonl"))
-        if args.split == "validation":
+        if args.split == "validation" or args.subset_size is not None:
             references = references[:len(rows)]
     else:
         references = [{"id": row["id"], "reference": row["reference"]} for row in rows]

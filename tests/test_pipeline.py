@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from src.common import ROOT, read_jsonl, sha256, write_jsonl
-from src.evaluate import score
+from src.evaluate import expected_ids, score
 from src.prepare_data import collect, normalize
 
 
@@ -55,6 +55,14 @@ class EvaluationTests(unittest.TestCase):
     def test_empty_scores_worse(self):
         empty = [{**x, "prediction": ""} for x in self.perfect]
         self.assertLess(score(empty, self.refs)["chrF"], score(self.perfect, self.refs)["chrF"])
+
+    def test_explicit_test_subset_must_match_frozen_prefix(self):
+        manifest = {"ids": ["a", "b", "c", "d"]}
+        self.assertEqual(expected_ids(manifest, "test", 2, 2), ["a", "b"])
+        with self.assertRaises(ValueError):
+            expected_ids(manifest, "test", 2, 1)
+        with self.assertRaises(ValueError):
+            expected_ids(manifest, "validation", 2, 2)
 
 
 if __name__ == "__main__":
